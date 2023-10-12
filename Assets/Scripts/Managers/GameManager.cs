@@ -12,33 +12,38 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject enemy;
-    private Vector3 instantiatePosition;
+    public List<Vector3> enemyInstantiatePositions;
+    private Vector3 destinationInstantiatePosition;
     private int enemyCount;
 
+    public static GameManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         enemyCount = (int)Mathf.Sqrt(MazeGenerator.instance._mazeWidth * MazeGenerator.instance._mazeDepth) / 2;
+        destinationInstantiatePosition = new Vector3((int)MazeGenerator.instance._mazeWidth / 2, 1f, (int)MazeGenerator.instance._mazeDepth / 2);
 
+        Instantiate(destination, destinationInstantiatePosition, Quaternion.identity);
         for (int i = 0; i <= enemyCount; i++)
         {
-            instantiatePosition = new Vector3(Random.Range(3, MazeGenerator.instance._mazeWidth),
-                0, Random.Range(3, MazeGenerator.instance._mazeDepth));
-            Instantiate(enemy, instantiatePosition, Quaternion.identity);
+            enemyInstantiatePositions.Add(new Vector3(Random.Range(3, MazeGenerator.instance._mazeWidth),
+                0, Random.Range(3, MazeGenerator.instance._mazeDepth)));
+            if (enemyInstantiatePositions[i] != destinationInstantiatePosition)
+            {
+                Instantiate(enemy, enemyInstantiatePositions[i], Quaternion.identity);
+            }
         }
-
-
     }
 
-    private void Update()
+    public void GameEnd()
     {
-        if (destination.activeSelf == false)
-        {
-            Time.timeScale = 0;
-            PlayerController.instance.canLook = false;
-            Cursor.lockState = CursorLockMode.None;
-            gameEndUI.SetActive(true);
-        }
+        Time.timeScale = 0;
+        PlayerController.instance.canLook = false;
+        Cursor.lockState = CursorLockMode.None;
+        gameEndUI.SetActive(true);
     }
-
-
 }

@@ -25,6 +25,14 @@ public class InteractionManager : MonoBehaviour
     public TextMeshProUGUI promptText;
     private Camera camera;
 
+    public bool foundDestination = true;
+
+    public static InteractionManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         camera = Camera.main;
@@ -67,6 +75,10 @@ public class InteractionManager : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started && curInteractable != null)
         {
+            if (curInteractGameObject.CompareTag("Destination"))
+            {
+                GameManager.instance.GameEnd();
+            }
             curInteractable.OnInteract();
             curInteractable = null;
             curInteractGameObject = null;

@@ -39,14 +39,7 @@ public class PlayerConditions : MonoBehaviour, IDamagable
     public Condition health;
     public Condition stamina;
 
-    public static PlayerConditions playerConditions;
-
     public UnityEvent OnTakeDamage;
-
-    private void Awake()
-    {
-        playerConditions = this;
-    }
 
     private void Start()
     {
@@ -75,6 +68,11 @@ public class PlayerConditions : MonoBehaviour, IDamagable
             PlayerController.instance.canAccel = false;
         }
 
+        if (health.curValue <= 0f)
+        {
+            GameManager.instance.GameEnd();
+        }
+
         health.uiBar.fillAmount = health.GetPercentage();
         stamina.uiBar.fillAmount = stamina.GetPercentage();
     }
@@ -84,10 +82,4 @@ public class PlayerConditions : MonoBehaviour, IDamagable
         health.Subtract(damageAmount);
         OnTakeDamage?.Invoke();
     }
-
-    //void AccelRateOutput()
-    //{
-    //    Debug.Log($"{PlayerController.instance.accelRateInput}, {PlayerController.instance.canAccel}");
-    //}
-
 }
