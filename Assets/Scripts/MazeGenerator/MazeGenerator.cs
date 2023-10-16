@@ -52,30 +52,30 @@ public class MazeGenerator : MonoBehaviour
             nextCell = GetNextUnvisitedCell(currentCell); // 다음에 갈 셀 반환
             if (nextCell != null)
             {
-                yield return GenerateMaze(currentCell, nextCell);
+                yield return GenerateMaze(currentCell, nextCell); // 재귀 호출, currentCell -> previousCell, nextCell -> currentCell
             }
         } while (nextCell != null);
     }
 
     private MazeCell GetNextUnvisitedCell(MazeCell currentCell)
     {
-        var unvisitedCells = GetUnvisitedcells(currentCell);
+        var unvisitedCells = GetUnvisitedCells(currentCell); // 진행 대상 좌표를 모아 놓은 제네릭
 
-        return unvisitedCells.OrderBy(x => Random.Range(1, 10)).FirstOrDefault();
+        return unvisitedCells.OrderBy(x => Random.Range(1, 10)).FirstOrDefault(); // 제네릭 중 무작위로 하나 골라 nextCell로 반환
     }
 
-    private IEnumerable<MazeCell> GetUnvisitedcells(MazeCell currentCell)
+    private IEnumerable<MazeCell> GetUnvisitedCells(MazeCell currentCell)
     {
         int x = (int)currentCell.transform.position.x; // 현재 셀의 위치
         int z = (int)currentCell.transform.position.z;
 
-        if (x + 1 < _mazeWidth)
+        if (x + 1 < _mazeWidth) // 현재 셀의 x좌표가 미로의 오른쪽 끝 x좌표 미만이면
         {
-            var cellToRight = _mazeGrid[x + 1, z];
+            var cellToRight = _mazeGrid[x + 1, z]; // 현재 셀의 오른쪽 좌표는 셀이 갈 수 있는 좌표가 있는 공간이다.
             
-            if (cellToRight.IsVisited == false)
+            if (cellToRight.IsVisited == false) // 그 오른쪽 좌표가 미로를 만드는 과정에서 아직 현재 셀이 지나친 적 없는 좌표라면
             {
-                yield return cellToRight;
+                yield return cellToRight; // 그 좌표는 셀 진행 대상이 된다.
             }
         }
         if (x - 1 >= 0)
